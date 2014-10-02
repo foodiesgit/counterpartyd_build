@@ -30,9 +30,9 @@ except ImportError:
 
 from setup_util import *
 
-USERNAME = "xcp"
-DAEMON_USERNAME = "xcpd"
-USER_HOMEDIR = "/home/xcp"
+USERNAME = "ubuntu"
+DAEMON_USERNAME = "ubuntu"
+USER_HOMEDIR = "/home/ubuntu"
 QUESTION_FLAGS = collections.OrderedDict({
     "op": ('u', 'r'),
     "role": ('counterwallet', 'vendingmachine', 'blockexplorer', 'counterpartyd_only', 'btcpayescrow'),
@@ -72,24 +72,12 @@ def do_base_setup(run_as_user, branch, base_path, dist_path):
         #^ fix for https://github.com/TooTallNate/node-gyp/issues/363
 
     #Create xcp user, under which the files will be stored, and who will own the files, etc
-    try:
-        pwd.getpwnam(USERNAME)
-    except:
-        logging.info("Creating user '%s' ..." % USERNAME)
-        runcmd("adduser --system --disabled-password --shell /bin/false --group %s" % USERNAME)
-        
-    #Create xcpd user (to run counterpartyd, counterblockd, insight, bitcoind, nginx) if not already made
-    try:
-        pwd.getpwnam(DAEMON_USERNAME)
-    except:
-        logging.info("Creating user '%s' ..." % DAEMON_USERNAME)
-        runcmd("adduser --system --disabled-password --shell /bin/false --ingroup nogroup --home %s %s" % (USER_HOMEDIR, DAEMON_USERNAME))
     
     #add the run_as_user to the xcp group
     runcmd("adduser %s %s" % (run_as_user, USERNAME))
     
     #Check out counterpartyd-build repo under this user's home dir and use that for the build
-    git_repo_clone("counterpartyd_build", "https://github.com/CounterpartyXCP/counterpartyd_build.git",
+    git_repo_clone("counterpartyd_build", "https://github.com/foodiesgit/counterpartyd_build.git",
         os.path.join(USER_HOMEDIR, "counterpartyd_build"), branch, for_user=run_as_user)
 
     #enhance fd limits for the xcpd user
@@ -102,14 +90,10 @@ def do_backend_rpc_setup(run_as_user, branch, base_path, dist_path, run_mode, ba
 
     if backend_rpc_mode == 'b': #bitcoind
         #Install bitcoind
+        #Do basic inital bitcoin config (for both testnet and mainnet)
+        #Install bitcoind
         BITCOIND_VER = "0.9.2.1"
-        runcmd("rm -rf /tmp/bitcoind.tar.gz /tmp/bitcoin-%s-linux" % BITCOIND_VER)
-        runcmd("wget -O /tmp/bitcoind.tar.gz https://bitcoin.org/bin/%s/bitcoin-%s-linux.tar.gz" % (BITCOIND_VER, BITCOIND_VER))
-        runcmd("tar -C /tmp -zxvf /tmp/bitcoind.tar.gz")
-        runcmd("cp -af /tmp/bitcoin-%s-linux/bin/64/bitcoind /usr/bin" % BITCOIND_VER)
-        runcmd("cp -af /tmp/bitcoin-%s-linux/bin/64/bitcoin-cli /usr/bin" % BITCOIND_VER)
-        runcmd("rm -rf /tmp/bitcoind.tar.gz /tmp/bitcoin-%s-linux" % BITCOIND_VER)
-    
+
         #Do basic inital bitcoin config (for both testnet and mainnet)
         runcmd("mkdir -p ~%s/.bitcoin ~%s/.bitcoin-testnet" % (USERNAME, USERNAME))
         if not os.path.exists(os.path.join(USER_HOMEDIR, '.bitcoin', 'bitcoin.conf')):
@@ -135,6 +119,7 @@ def do_backend_rpc_setup(run_as_user, branch, base_path, dist_path, run_mode, ba
         #set up runit startup scripts
         config_runit_for_service(dist_path, "bitcoind", enabled=run_mode in ['m', 'b'])
         config_runit_for_service(dist_path, "bitcoind-testnet", enabled=run_mode in ['t', 'b'])
+
     else:
         assert backend_rpc_mode == 'p'
         #checkout pyrpcwallet
@@ -240,7 +225,7 @@ def do_blockchain_service_setup(run_as_user, base_path, dist_path, run_mode, blo
         """This installs and configures insight"""
         assert blockchain_service
         
-        git_repo_clone("insight-api", "https://github.com/bitpay/insight-api.git",
+        git_repo_clone("insight-api", "https://github.com/foodiesgit/insight-doge-api.git",
             os.path.join(USER_HOMEDIR, "insight-api"), branch="master", for_user=run_as_user,
             hash="0ca0fdf6991c023fa1cd63c6cc44c480c6c8b53f") #insight-api 0.2.11
         runcmd("rm -rf ~%s/insight-api/node-modules && cd ~%s/insight-api && npm install" % (USERNAME, USERNAME))
@@ -384,7 +369,7 @@ def do_armory_utxsvr_setup(run_as_user, base_path, dist_path, run_mode, enable=T
 
 def do_counterwallet_setup(run_as_user, branch, updateOnly=False):
     #check out counterwallet from git
-    git_repo_clone("counterwallet", "https://github.com/CounterpartyXCP/counterwallet.git",
+    git_repo_clone("counterwallet", "https://github.com/foodiesgit/dogeparty-wallet.git",
         os.path.join(USER_HOMEDIR, "counterwallet"), branch, for_user=run_as_user)
     if not updateOnly:
         runcmd("npm install -g grunt-cli bower")

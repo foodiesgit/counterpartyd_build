@@ -1,7 +1,7 @@
 #!/bin/sh
 
-USER=xcpd
-export USER_HOME=/home/xcp
+USER=ubuntu
+export USER_HOME=/home/ubuntu
 
 #sv start bitcoind || exit 1
 exec 2>&1

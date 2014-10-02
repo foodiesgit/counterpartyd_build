@@ -9,9 +9,9 @@ import getopt
 
 from setup_util import *
 
-USERNAME = "xcp"
-DAEMON_USERNAME = "xcpd"
-USER_HOMEDIR = "/home/xcp"
+USERNAME = "ubuntu"
+DAEMON_USERNAME = "ubuntu"
+USER_HOMEDIR = "/home/ubuntu"
 
 def usage():
     print("SYNTAX: %s [-h] [--get-bitcoind-data] [--get-counterpartyd-data] [--get-testnet-data]" % sys.argv[0])

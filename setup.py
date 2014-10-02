@@ -27,9 +27,9 @@ except ImportError:
 from setup_util import *
 
 PYTHON3_VER = None
-DEFAULT_CONFIG = "[Default]\nbackend-rpc-connect=localhost\nbackend-rpc-port=8332\nbackend-rpc-user=rpc\nbackend-rpc-password=1234\nrpc-host=localhost\nrpc-port=4000\nrpc-user=rpc\nrpc-password=xcppw1234"
+DEFAULT_CONFIG = "[Default]\nbackend-rpc-connect=localhost\nbackend-rpc-port=10889\nbackend-rpc-user=food\nbackend-rpc-password=ies\nrpc-host=localhost\nrpc-port=4000\nrpc-user=rpc\nrpc-password=xcppw1234"
 DEFAULT_CONFIG_TESTNET = "[Default]\nbackend-rpc-connect=localhost\nbackend-rpc-port=18332\nbackend-rpc-user=rpc\nbackend-rpc-password=1234\nrpc-host=localhost\nrpc-port=14000\nrpc-user=rpc\nrpc-password=xcppw1234\ntestnet=1"
-DEFAULT_CONFIG_COUNTERBLOCKD = "[Default]\nbackend-rpc-connect=localhost\nbackend-rpc-port=8332\nbackend-rpc-user=rpc\nbackend-rpc-password=rpcpw1234\ncounterpartyd-rpc-host=localhost\ncounterpartyd-rpc-port=4000\ncounterpartyd-rpc-user=rpc\ncounterpartyd-rpc-password=xcppw1234\nrpc-host=0.0.0.0\nsocketio-host=0.0.0.0\nsocketio-chat-host=0.0.0.0\nredis-enable-apicache=0"
+DEFAULT_CONFIG_COUNTERBLOCKD = "[Default]\nbackend-rpc-connect=localhost\nbackend-rpc-port=10889\nbackend-rpc-user=rpc\nbackend-rpc-password=rpcpw1234\ncounterpartyd-rpc-host=localhost\ncounterpartyd-rpc-port=4000\ncounterpartyd-rpc-user=rpc\ncounterpartyd-rpc-password=xcppw1234\nrpc-host=0.0.0.0\nsocketio-host=0.0.0.0\nsocketio-chat-host=0.0.0.0\nredis-enable-apicache=0"
 DEFAULT_CONFIG_COUNTERBLOCKD_TESTNET = "[Default]\nbackend-rpc-connect=localhost\nbackend-rpc-port=18332\nbackend-rpc-user=rpc\nbackend-rpc-password=1234\ncounterpartyd-rpc-host=localhost\ncounterpartyd-rpc-port=14000\ncounterpartyd-rpc-user=rpc\ncounterpartyd-rpc-password=xcppw1234\nrpc-host=0.0.0.0\nsocketio-host=0.0.0.0\nsocketio-chat-host=0.0.0.0\nredis-enable-apicache=0\ntestnet=1"
 
 def _get_app_cfg_paths(appname, run_as_user):
@@ -119,15 +119,15 @@ def get_paths(with_counterblockd):
     return paths
 
 def checkout(branch, paths, run_as_user, with_counterblockd, is_update):
-    git_repo_clone("counterpartyd", "https://github.com/CounterpartyXCP/counterpartyd.git",
+    git_repo_clone("counterpartyd", "https://github.com/foodiesgit/dogepartyd.git",
         os.path.join(paths['dist_path'], "counterpartyd"), branch=branch, for_user=run_as_user)    
     
     if with_counterblockd:
-        git_repo_clone("counterblockd", "https://github.com/CounterpartyXCP/counterblockd.git",
+        git_repo_clone("counterblockd", "https://github.com/foodiesgit/counterblockd.git",
             os.path.join(paths['dist_path'], "counterblockd"), branch=branch, for_user=run_as_user)    
 
     if is_update: #update mode specified... update ourselves (counterpartyd_build) as well
-        git_repo_clone("counterpartyd_build", "https://github.com/CounterpartyXCP/counterpartyd_build.git",
+        git_repo_clone("counterpartyd_build", "https://github.com/foodiesgit/counterpartyd_build.git",
             paths['base_path'], branch=branch, for_user=run_as_user)
     
     sys.path.insert(0, os.path.join(paths['dist_path'], "counterpartyd")) #can now import counterparty modules

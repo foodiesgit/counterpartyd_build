@@ -1,6 +1,6 @@
 #!/bin/sh
 
-USER=xcpd
-USER_HOME=/home/xcp
+USER=ubuntu
+USER_HOME=/home/ubuntu
 
-exec chpst -u ${USER} bitcoind -daemon=0 -datadir=${USER_HOME}/.bitcoin
+exec chpst -u ${USER} myriadcoind -daemon=0 -datadir=${USER_HOME}/.myriadcoin
